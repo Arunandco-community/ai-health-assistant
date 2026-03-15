@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>AI Health Assistant — Smart. Safe. Preventive Healthcare.</title>
+    <meta name="description" content="AI-powered health assistant: symptom analysis, vaccine guidance, medical information." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a1628;--bg2:#0d1f3c;--bgt:#062a2e;--g0:rgba(255,255,255,0.04);--g1:rgba(255,255,255,0.07);--g2:rgba(255,255,255,0.11);--b0:rgba(255,255,255,0.06);--b1:rgba(255,255,255,0.10);--t:#e8edf5;--ts:#8b9ec2;--tm:#4e6388;--ac:#14b8a6;--ab:#3b82f6;--ap:#8b5cf6;--aa:#f59e0b;--ar:#ef4444;--gu:linear-gradient(135deg,#3b82f6,#6366f1);--gs:linear-gradient(135deg,#14b8a6,#3b82f6);--gbg:linear-gradient(145deg,#062a2e 0%,#0a1628 40%,#0d1f3c 100%);--gland:linear-gradient(160deg,#041a1e 0%,#081422 45%,#0d1838 100%);--r1:8px;--r2:12px;--r3:16px;--r4:20px;--rp:50px;--sw:300px}
+        html{font-size:16px}
+        body{font-family:'Inter',sans-serif;background:var(--gbg);color:var(--t);min-height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased}
+        button{font-family:inherit;cursor:pointer;border:none;background:none}
+        input,select,textarea{font-family:inherit}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.09);border-radius:3px}
+        .screen{display:none;width:100%;height:100vh;position:relative}.screen.active{display:flex}
+        #loginScreen{background:var(--gland);align-items:center;justify-content:center;overflow:hidden}
+        .ptcl{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+        .pt{position:absolute;border-radius:50%;background:rgba(20,184,166,0.07);animation:floatup linear infinite}
+        @keyframes floatup{0%{transform:translateY(105vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+        .lcard{position:relative;z-index:2;background:rgba(255,255,255,0.05);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r4);padding:44px 40px;width:430px;max-width:93vw;box-shadow:0 4px 40px rgba(0,0,0,0.4),0 0 60px rgba(20,184,166,0.06);animation:scaleIn .5s ease both}
+        @keyframes scaleIn{from{opacity:0;transform:scale(.92) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        .lbrand{text-align:center;margin-bottom:32px}.llogo{width:64px;height:64px;background:var(--gs);border-radius:18px;display:inline-flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:14px;box-shadow:0 6px 24px rgba(20,184,166,0.25)}.lbrand h1{font-size:1.45rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px}.lbrand .tag{font-size:.76rem;color:var(--ts);letter-spacing:.04em}
+        .fgrp{margin-bottom:14px}.fgrp label{display:block;font-size:.68rem;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+        .fi{width:100%;padding:11px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r2);color:var(--t);font-size:.86rem;outline:none;transition:border-color .2s,box-shadow .2s}.fi:focus{border-color:rgba(20,184,166,.4);box-shadow:0 0 0 3px rgba(20,184,166,.07)}.fi::placeholder{color:var(--tm)}
+        .frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%238b9ec2' d='M5 7L0 2h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;cursor:pointer}select.fi option{background:#0d1f3c}
+        .cbtn{width:100%;padding:13px;background:var(--gs);color:#fff;font-size:.9rem;font-weight:600;border-radius:var(--r2);margin-top:6px;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 16px rgba(20,184,166,.25)}.cbtn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(20,184,166,.35)}
+        #langScreen{background:var(--gland);align-items:center;justify-content:center;flex-direction:column}
+        .langcard{text-align:center;animation:scaleIn .45s ease both;padding:20px}.langcard h2{font-size:1.3rem;font-weight:700;margin-bottom:6px}.langcard .lsub{color:var(--ts);font-size:.85rem;margin-bottom:28px}
+        .langopts{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+        .lbtn{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r3);padding:22px 34px;color:var(--t);font-size:.88rem;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:9px;transition:all .3s;min-width:130px;box-shadow:0 4px 20px rgba(0,0,0,.25)}.lbtn:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.15);transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.35)}.lbtn .em{font-size:2rem}.lbtn .nat{font-size:.68rem;color:var(--tm)}
+        #appScreen{flex-direction:row;background:var(--gbg)}
+        .sidebar{width:var(--sw);background:rgba(10,22,40,.78);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-right:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;padding:20px 14px;flex-shrink:0;z-index:10;transition:transform .35s;overflow-y:auto}
+        .sbrand{display:flex;align-items:center;gap:11px;padding:0 4px;margin-bottom:20px}.slogo{width:38px;height:38px;background:var(--gs);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 3px 12px rgba(20,184,166,.2)}.stitle{font-size:.92rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}.stitle small{display:block;font-size:.62rem;font-weight:400;color:var(--tm);margin-top:2px}
+        .sprofile{background:var(--g0);border:1px solid var(--g1);border-radius:var(--r2);padding:12px;margin-bottom:14px}.spname{font-weight:600;font-size:.82rem;margin-bottom:3px}.spdet{font-size:.68rem;color:var(--tm);line-height:1.5}.splang{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;margin-top:6px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.15);border-radius:var(--rp);font-size:.63rem;color:#5eead4;font-weight:600}
+        .ncbtn{width:100%;padding:10px;background:var(--g0);border:1px solid var(--g1);border-radius:var(--r2);color:var(--t);font-size:.8rem;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .2s;margin-bottom:14px}.ncbtn:hover{background:var(--g2);border-color:rgba(255,255,255,0.14)}
+        .sb-section-title{font-size:.65rem;font-weight:600;color:var(--tm);text-transform:uppercase;letter-spacing:.07em;padding:0 4px;margin-bottom:6px;margin-top:2px}
+        .hist-list{display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto;margin-bottom:8px}.hist-item{padding:9px 10px;background:var(--g0);border:1px solid transparent;border-radius:var(--r1);font-size:.73rem;color:var(--ts);cursor:pointer;transition:all .2s;line-height:1.35}.hist-item:hover{background:var(--g1);border-color:var(--g1);color:var(--t)}.hist-item .hi-time{font-size:.62rem;color:var(--tm);margin-top:2px}.hist-empty{font-size:.72rem;color:var(--tm);text-align:center;padding:10px 0;font-style:italic}
+        .snav{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}.nitem{display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:var(--r2);font-size:.8rem;font-weight:500;color:var(--ts);cursor:pointer;transition:all .2s;border:1px solid transparent}.nitem:hover{background:var(--g0);color:var(--t)}.nitem.active{background:var(--g2);color:var(--t);border-color:var(--g1)}.nic{font-size:.95rem;width:20px;text-align:center}
+        .sfooter{padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);margin-top:auto}.logobtn{width:100%;padding:8px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.15);border-radius:var(--r2);color:#fca5a5;font-size:.76rem;font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s;margin-bottom:10px}.logobtn:hover{background:rgba(239,68,68,.15)}.sfooter p{font-size:.63rem;color:var(--tm);text-align:center;line-height:1.5}
+        .mobh{display:none;position:fixed;top:0;left:0;right:0;height:52px;background:rgba(10,22,40,.93);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.07);z-index:20;align-items:center;padding:0 13px;gap:10px}.hmbg{color:var(--t);font-size:1.25rem;padding:4px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--r1);transition:background .2s}.hmbg:hover{background:var(--g0)}.mobt{font-size:.88rem;font-weight:600}
+        .sbov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9}
+        .main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+        .sc-panel{display:none;position:absolute;inset:0;z-index:5;background:var(--gbg);flex-direction:column;align-items:center;justify-content:center;padding:24px;animation:fadeUp .35s ease both}.sc-panel.open{display:flex}
+        .sc-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r4);padding:36px 32px;width:520px;max-width:95vw;box-shadow:0 8px 40px rgba(0,0,0,.35)}.sc-card h2{font-size:1.2rem;font-weight:700;margin-bottom:6px}.sc-card .scdesc{font-size:.82rem;color:var(--ts);margin-bottom:22px;line-height:1.55}
+        .sc-examples{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}.sc-ex{padding:5px 11px;background:var(--g0);border:1px solid var(--g1);border-radius:var(--rp);font-size:.72rem;color:var(--ts);cursor:pointer;transition:all .2s}.sc-ex:hover{background:var(--g1);color:var(--t)}
+        .sc-ta{width:100%;padding:12px 15px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r2);color:var(--t);font-size:.86rem;resize:vertical;min-height:90px;outline:none;transition:border-color .2s}.sc-ta:focus{border-color:rgba(20,184,166,.38)}.sc-ta::placeholder{color:var(--tm)}
+        .sc-actions{display:flex;gap:10px;margin-top:14px}.sc-submit{flex:1;padding:12px;background:var(--gs);color:#fff;font-size:.88rem;font-weight:600;border-radius:var(--r2);transition:transform .2s,box-shadow .2s;box-shadow:0 3px 14px rgba(20,184,166,.22)}.sc-submit:hover{transform:translateY(-1px);box-shadow:0 5px 22px rgba(20,184,166,.32)}.sc-cancel{padding:12px 18px;background:var(--g0);border:1px solid var(--g1);border-radius:var(--r2);color:var(--ts);font-size:.88rem;transition:all .2s}.sc-cancel:hover{background:var(--g1);color:var(--t)}
+        .vax-panel{display:none;position:absolute;inset:0;z-index:5;background:var(--gbg);flex-direction:column;padding:0;animation:fadeUp .35s ease both;overflow-y:auto}.vax-panel.open{display:flex}
+        .vax-header{padding:24px 28px 0;display:flex;align-items:center;justify-content:space-between;max-width:900px;width:100%;margin:0 auto}.vax-header h2{font-size:1.15rem;font-weight:700}
+        .vax-close{padding:8px 16px;background:var(--g0);border:1px solid var(--g1);border-radius:var(--r2);color:var(--ts);font-size:.8rem;transition:all .2s}.vax-close:hover{background:var(--g1);color:var(--t)}
+        .vax-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding:16px 28px 28px;max-width:900px;width:100%;margin:0 auto}
+        .vcard{background:rgba(255,255,255,0.04);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.07);border-radius:var(--r3);padding:18px;transition:all .25s}.vcard:hover{background:rgba(255,255,255,0.07);border-color:rgba(20,184,166,.2);transform:translateY(-2px)}
+        .vcard-icon{font-size:1.6rem;margin-bottom:10px}.vcard-name{font-size:.95rem;font-weight:700;margin-bottom:4px}.vcard-prevents{font-size:.74rem;color:var(--ts);margin-bottom:6px}.vcard-age{display:inline-block;padding:3px 9px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.15);border-radius:var(--rp);font-size:.65rem;color:#5eead4;font-weight:600;margin-bottom:8px}.vcard-note{font-size:.72rem;color:var(--tm);line-height:1.45}
+        .vax-disc{margin:0 28px 24px;padding:12px 16px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.15);border-radius:var(--r2);font-size:.76rem;color:#fbbf24;line-height:1.5;max-width:900px;width:calc(100% - 56px)}
+        .chat-area{flex:1;overflow-y:auto;padding:24px 18px;padding-bottom:90px;scroll-behavior:smooth}
+        .msgs{max-width:740px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+        .welcome{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 16px;animation:fadeUp .5s ease both}.wicon{width:68px;height:68px;background:var(--gs);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:18px;box-shadow:0 8px 26px rgba(20,184,166,.18)}.welcome h2{font-size:1.35rem;font-weight:700;margin-bottom:8px;letter-spacing:-.02em}.welcome p{color:var(--ts);font-size:.86rem;max-width:400px;line-height:1.6;margin-bottom:24px}
+        .qas{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}.qa{background:var(--g0);border:1px solid var(--g1);border-radius:var(--r3);padding:11px 16px;color:var(--ts);font-size:.78rem;display:flex;align-items:center;gap:6px;transition:all .2s}.qa:hover{background:var(--g2);color:var(--t);border-color:rgba(255,255,255,0.13);transform:translateY(-2px)}
+        .mrow{display:flex;animation:fadeUp .3s ease both}.mrow.u{justify-content:flex-end}.mrow.a{justify-content:flex-start}
+        .mbub{max-width:82%;padding:12px 16px;border-radius:var(--r3);font-size:.85rem;line-height:1.65;word-wrap:break-word}.mrow.u .mbub{background:var(--gu);color:#fff;border-bottom-right-radius:4px;box-shadow:0 4px 14px rgba(59,130,246,.18)}.mrow.a .mbub{background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08);color:var(--t);border-bottom-left-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+        .mtime{font-size:.6rem;color:var(--tm);margin-top:5px;opacity:.7}.mrow.u .mtime{text-align:right;color:rgba(255,255,255,.4)}
+        .aav{width:28px;height:28px;background:var(--gs);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;margin-right:8px;flex-shrink:0;margin-top:2px}
+        .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--rp);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}.bd{width:5px;height:5px;border-radius:50%;display:inline-block}
+        .bml{background:rgba(139,92,246,.12);color:#c4b5fd;border:1px solid rgba(139,92,246,.22)}.bml .bd{background:#8b5cf6}.bllm{background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.22)}.bllm .bd{background:#3b82f6}.bclf{background:rgba(245,158,11,.12);color:#fcd34d;border:1px solid rgba(245,158,11,.22)}.bclf .bd{background:#f59e0b}.berr{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}.berr .bd{background:#ef4444}
+        .mld{font-size:1.05rem;font-weight:700;color:#e2e8f0;margin-bottom:10px}.mlcw{margin-bottom:10px}.mlcl{font-size:.7rem;color:var(--ts);margin-bottom:5px;display:flex;justify-content:space-between}.mlcv{font-weight:700;font-size:.8rem;color:var(--t)}.mltr{height:7px;background:rgba(255,255,255,0.07);border-radius:4px;overflow:hidden}.mlf{height:100%;border-radius:4px;background:linear-gradient(90deg,#8b5cf6,#a78bfa);transition:width 1s ease;width:0%}.mlm{color:var(--ts);font-size:.81rem;line-height:1.6}.mldisc{margin-top:10px;padding:8px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.12);border-radius:var(--r1);font-size:.69rem;color:#fbbf24;line-height:1.45}
+        .errbox{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:var(--r2);padding:11px 13px;color:#fca5a5;font-size:.81rem;line-height:1.5;display:flex;align-items:flex-start;gap:8px}
+        .vchat-panel{margin-top:12px;background:rgba(20,184,166,.05);border:1px solid rgba(20,184,166,.12);border-radius:var(--r2);padding:13px 15px}.vchat-title{font-size:.76rem;font-weight:600;color:#5eead4;margin-bottom:9px;display:flex;align-items:center;gap:5px}.vchips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}.vchip{padding:4px 10px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.17);border-radius:var(--rp);font-size:.69rem;color:#99f6e4;font-weight:500}.vcdisc{font-size:.64rem;color:var(--tm);font-style:italic;line-height:1.4}
+        .trow{display:flex;justify-content:flex-start;animation:fadeUp .3s ease both}.tbub{background:rgba(255,255,255,0.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r3);border-bottom-left-radius:4px;padding:13px 18px;display:flex;align-items:center;gap:4px}.td{width:6px;height:6px;background:var(--tm);border-radius:50%;animation:bnc 1.4s infinite ease-in-out}.td:nth-child(2){animation-delay:.16s}.td:nth-child(3){animation-delay:.32s}
+        @keyframes bnc{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-5px);opacity:1}}
+        .ibar{position:absolute;bottom:0;left:0;right:0;padding:13px 18px;z-index:5;background:linear-gradient(to top,var(--bg) 60%,transparent)}.iwrap{max-width:740px;margin:0 auto;display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:var(--rp);padding:5px 5px 5px 17px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .2s}.iwrap:focus-within{border-color:rgba(20,184,166,.3);box-shadow:0 0 0 3px rgba(20,184,166,.05)}
+        #ci{flex:1;border:none;outline:none;background:transparent;color:var(--t);font-size:.85rem;min-width:0}#ci::placeholder{color:var(--tm)}
+        #sb{width:38px;height:38px;border-radius:50%;background:var(--gs);color:#fff;font-size:.95rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;box-shadow:0 2px 10px rgba(20,184,166,.18)}#sb:hover:not(:disabled){transform:scale(1.08);box-shadow:0 4px 18px rgba(20,184,166,.3)}#sb:disabled{opacity:.35;cursor:not-allowed;transform:none}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @media(max-width:768px){.sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);z-index:30;width:275px}.sidebar.open{transform:translateX(0)}.sbov.vis{display:block;z-index:25}.mobh{display:flex}.main{padding-top:52px}.chat-area{padding:12px 9px;padding-bottom:82px}.ibar{padding:10px 9px}.mbub{max-width:91%;font-size:.83rem}.welcome{padding:20px 12px}.welcome h2{font-size:1.1rem}.wicon{width:56px;height:56px;font-size:26px}.qas{flex-direction:column;align-items:stretch}.qa{justify-content:center}.lcard{padding:30px 22px}.frow{grid-template-columns:1fr}.langopts{flex-direction:column;align-items:center}.lbtn{min-width:200px}.sc-card{padding:26px 20px}.vax-grid{grid-template-columns:1fr 1fr;padding:12px 16px 20px}.vax-header{padding-left:16px;padding-right:16px}.vax-disc{margin:0 16px 20px;width:calc(100% - 32px)}}
+        @media(max-width:480px){.vax-grid{grid-template-columns:1fr}}
+        .modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px)}.modal-ov.open{display:flex}
+        .modal-card{background:rgba(13,31,60,.97);border:1px solid rgba(255,255,255,.1);border-radius:var(--r4);padding:32px 28px;width:480px;max-width:95vw;box-shadow:0 8px 48px rgba(0,0,0,.5);animation:scaleIn .3s ease both}.modal-card h3{font-size:1.05rem;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+        .modal-close{margin-left:auto;background:var(--g1);border:1px solid var(--g2);border-radius:var(--r1);color:var(--ts);font-size:.78rem;padding:4px 12px;cursor:pointer;transition:all .2s}.modal-close:hover{background:var(--g2);color:var(--t)}
+        .mem-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;max-height:200px;overflow-y:auto}.mem-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--g0);border:1px solid transparent;border-radius:var(--r2);cursor:pointer;transition:all .2s}.mem-item:hover{background:var(--g1);border-color:var(--g1)}.mem-item.active{border-color:rgba(20,184,166,.3);background:rgba(20,184,166,.06)}.mem-av{width:34px;height:34px;border-radius:10px;background:var(--gs);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0}.mem-info{flex:1;min-width:0}.mem-name{font-size:.84rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mem-meta{font-size:.68rem;color:var(--tm)}.mem-del{padding:4px 8px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.15);border-radius:var(--r1);color:#fca5a5;font-size:.65rem;cursor:pointer;transition:all .2s;flex-shrink:0}.mem-del:hover{background:rgba(239,68,68,.2)}
+        .add-mem-form{border-top:1px solid rgba(255,255,255,.06);padding-top:16px}.add-mem-form h4{font-size:.76rem;color:var(--ts);font-weight:600;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em}.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+        .act-mem{display:flex;align-items:center;gap:9px;padding:9px 11px;background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.15);border-radius:var(--r2);margin-bottom:10px;cursor:pointer;transition:all .2s}.act-mem:hover{background:rgba(20,184,166,.1)}.act-mem-av{width:28px;height:28px;border-radius:8px;background:var(--gs);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0}.act-mem-info{flex:1;min-width:0}.act-mem-label{font-size:.6rem;color:var(--ac);font-weight:600;text-transform:uppercase;letter-spacing:.05em}.act-mem-name{font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.act-mem-chg{font-size:.62rem;color:var(--ts)}
+        .vs-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--rp);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}.vs-completed{background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.25);color:#5eead4}.vs-due{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);color:#fcd34d}.vs-overdue{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);color:#fca5a5}.vs-upcoming{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:#93c5fd}
+        .vcard-actions{margin-top:10px;display:flex;gap:6px}.vcard-mark{padding:6px 12px;background:rgba(20,184,166,.1);border:1px solid rgba(20,184,166,.2);border-radius:var(--rp);font-size:.7rem;font-weight:600;color:#5eead4;cursor:pointer;transition:all .2s}.vcard-mark:hover{background:rgba(20,184,166,.2)}.vcard-mark.done{background:rgba(20,184,166,.18);color:#99f6e4;cursor:default}
+        .reminder-bub{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.18);border-left:3px solid #f59e0b;border-radius:var(--r2);padding:11px 14px;font-size:.81rem;color:#fde68a;line-height:1.55;animation:fadeUp .4s ease both}.reminder-bub .rem-head{font-weight:700;font-size:.75rem;color:#fbbf24;margin-bottom:4px;display:flex;align-items:center;gap:5px}
+        .vax-mem-bar{display:flex;align-items:center;gap:10px;padding:12px 28px 0;max-width:900px;margin:0 auto}.vax-mem-tag{background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.18);border-radius:var(--rp);padding:5px 14px;font-size:.76rem;color:#5eead4;font-weight:600}
+        .vax-stats{display:flex;gap:8px;flex-wrap:wrap;padding:10px 28px 0;max-width:900px;margin:0 auto}
+        .vrem-btn{padding:7px 18px;border-radius:var(--rp);font-size:.78rem;font-weight:700;cursor:pointer;border:1px solid transparent;transition:all .2s;letter-spacing:.02em}.vrem-btn:disabled{cursor:not-allowed}.vrem-yes{background:rgba(20,184,166,.15);border-color:rgba(20,184,166,.35);color:#5eead4}.vrem-yes:hover:not(:disabled){background:rgba(20,184,166,.28);transform:translateY(-1px)}.vrem-no{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3);color:#fcd34d}.vrem-no:hover:not(:disabled){background:rgba(245,158,11,.22);transform:translateY(-1px)}
+        .vchip-due{padding:4px 10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);border-radius:var(--rp);font-size:.69rem;color:#fcd34d;font-weight:600}.vchip-overdue{padding:4px 10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);border-radius:var(--rp);font-size:.69rem;color:#fca5a5;font-weight:600}
+        .vcard-duedate{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);border-radius:var(--rp);font-size:.67rem;color:#93c5fd;font-weight:600;margin-bottom:8px}
+        .btn-remind{padding:6px 12px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:var(--rp);font-size:.7rem;font-weight:600;color:#93c5fd;cursor:pointer;transition:all .2s;flex-shrink:0}.btn-remind:hover{background:rgba(59,130,246,.22);transform:translateY(-1px)}.btn-remind.sent{background:rgba(20,184,166,.12);border-color:rgba(20,184,166,.22);color:#5eead4;cursor:default}
+        .vax-reg-btn{padding:8px 16px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);border-radius:var(--r2);color:#c4b5fd;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}.vax-reg-btn:hover{background:rgba(139,92,246,.22)}
+        .creg-modal .modal-card{width:500px}.creg-success{background:rgba(20,184,166,.07);border:1px solid rgba(20,184,166,.2);border-radius:var(--r2);padding:12px 14px;font-size:.82rem;color:#5eead4;line-height:1.55;margin-top:12px;display:none}.creg-success.show{display:block}
+        .remind-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(13,31,60,.97);border:1px solid rgba(59,130,246,.3);border-radius:50px;padding:12px 22px;font-size:.83rem;color:#93c5fd;font-weight:600;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.4);transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;pointer-events:none}.remind-toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+        .vax-popup{position:fixed;inset:0;background:rgba(0,0,0,.70);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:9999;animation:fadeIn .35s ease both}@keyframes fadeIn{from{opacity:0}to{opacity:1}}.vax-popup.hidden{display:none}
+        .vax-popup-card{position:relative;background:rgba(255,255,255,0.10);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.18);border-radius:24px;padding:36px 32px 28px;width:360px;max-width:93vw;text-align:center;color:#fff;box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 0 1px rgba(20,184,166,.15) inset;animation:popIn .45s cubic-bezier(.34,1.56,.64,1) both}@keyframes popIn{from{opacity:0;transform:scale(.85) translateY(24px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        .vax-popup-icon{width:64px;height:64px;background:linear-gradient(135deg,#14b8a6,#3b82f6);border-radius:18px;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;box-shadow:0 8px 24px rgba(20,184,166,.35)}.vax-popup-title{font-size:1.1rem;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}.vax-popup-child{font-size:.78rem;color:rgba(255,255,255,.65);margin-bottom:18px}.vax-popup-name{font-size:1rem;font-weight:700;color:#5eead4;margin-bottom:6px}
+        .vax-popup-due{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:50px;font-size:.78rem;font-weight:700;margin-bottom:22px}.vax-popup-due.urgent{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.4);color:#fca5a5}.vax-popup-due.soon{background:rgba(245,158,11,.18);border:1px solid rgba(245,158,11,.38);color:#fcd34d}.vax-popup-due.upcoming{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.35);color:#93c5fd}
+        .vax-popup-counter{font-size:.68rem;color:rgba(255,255,255,.45);margin-bottom:16px}.vax-popup-btns{display:flex;gap:10px;justify-content:center}.vax-popup-btns button{flex:1;padding:11px 14px;border-radius:12px;font-size:.84rem;font-weight:700;cursor:pointer;transition:all .2s;border:none}.vax-popup-btns .vp-complete{background:linear-gradient(135deg,#14b8a6,#3b82f6);color:#fff;box-shadow:0 4px 16px rgba(20,184,166,.3)}.vax-popup-btns .vp-complete:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(20,184,166,.45)}.vax-popup-btns .vp-later{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.8)}.vax-popup-btns .vp-later:hover{background:rgba(255,255,255,.18)}
+        .vax-popup-dismiss{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.55);font-size:.72rem;padding:3px 8px;cursor:pointer;transition:all .2s}.vax-popup-dismiss:hover{background:rgba(255,255,255,.18);color:#fff}
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: LOGIN -->
+    <div class="screen" id="loginScreen">
+        <div class="ptcl" id="ptcl"></div>
+        <div class="lcard">
+            <div class="lbrand"><div class="llogo">🩺</div><h1>AI Health Assistant</h1><p class="tag">Smart. Safe. Preventive Healthcare.</p></div>
+            <form id="lform" autocomplete="off">
+                <div class="fgrp"><label for="un">Full Name</label><input type="text" id="un" class="fi" placeholder="Your full name" required /></div>
+                <div class="fgrp"><label for="ue">Email</label><input type="email" id="ue" class="fi" placeholder="your.email@example.com" required /></div>
+                <div class="frow">
+                    <div class="fgrp"><label for="ua">Age</label><input type="number" id="ua" class="fi" placeholder="Age" min="1" max="120" required /></div>
+                    <div class="fgrp"><label for="ug">Gender</label><select id="ug" class="fi" required><option value="" disabled selected>Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+                </div>
+                <div class="fgrp"><label for="ul">Location</label><input type="text" id="ul" class="fi" placeholder="City / District" required /></div>
+                <button type="submit" class="cbtn">Continue →</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: LANGUAGE -->
+    <div class="screen" id="langScreen">
+        <div class="langcard">
+            <h2>Choose Your Language</h2><p class="lsub">Select the language for AI responses</p>
+            <div class="langopts">
+                <button class="lbtn" data-lang="English"><span class="em">🇬🇧</span>English<span class="nat">English</span></button>
+                <button class="lbtn" data-lang="Tamil"><span class="em">🇮🇳</span>Tamil<span class="nat">தமிழ்</span></button>
+                <button class="lbtn" data-lang="Hindi"><span class="em">🇮🇳</span>Hindi<span class="nat">हिन्दी</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: APP -->
+    <div class="screen" id="appScreen">
+        <header class="mobh" id="mobh"><button class="hmbg" id="hmbg">☰</button><span class="mobt">AI Health Assistant</span></header>
+        <div class="sbov" id="sbov"></div>
+        <aside class="sidebar" id="sidebar">
+            <div class="sbrand"><div class="slogo">🩺</div><div class="stitle">AI Health Assistant<small>Powered by ML &amp; AI</small></div></div>
+            <div class="sprofile" id="spro"><div class="spname" id="spname"></div><div class="spdet" id="spdet"></div><div class="splang" id="splang"></div></div>
+            <div class="act-mem" id="actMemBanner" title="Click to manage family members">
+                <div class="act-mem-av" id="actMemAv">U</div>
+                <div class="act-mem-info"><div class="act-mem-label">Active Member</div><div class="act-mem-name" id="actMemName">Loading…</div></div>
+                <div class="act-mem-chg">⇄</div>
+            </div>
+            <button class="ncbtn" id="ncbtn">✦ New Conversation</button>
+            <div class="sb-section-title">Navigation</div>
+            <nav class="snav">
+                <div class="nitem active" id="navChat"><span class="nic">💬</span>Chat Console</div>
+                <div class="nitem" id="navSC"><span class="nic">🔬</span>Symptom Checker</div>
+                <div class="nitem" id="navVax"><span class="nic">💉</span>Vaccine Tracker</div>
+            </nav>
+            <div class="sb-section-title" style="margin-top:10px">History</div>
+            <div class="hist-list" id="histList"></div>
+            <div class="sfooter">
+                <button class="logobtn" id="logoutBtn">⏻ Logout</button>
+                <p>AI Health Assistant v3.0<br />© 2026 — Final Year Project</p>
+            </div>
+        </aside>
+        <main class="main">
+            <div class="sc-panel" id="scPanel">
+                <div class="sc-card">
+                    <h2>🔬 Symptom Checker</h2>
+                    <p class="scdesc">Describe your symptoms below. Our AI will analyze them and provide guidance. For emergencies, call your local helpline immediately.</p>
+                    <div class="sc-examples">
+                        <button class="sc-ex" data-sym="fever, headache, body ache">Fever &amp; Headache</button>
+                        <button class="sc-ex" data-sym="cough, cold, sore throat">Cough &amp; Cold</button>
+                        <button class="sc-ex" data-sym="stomach pain, vomiting, diarrhea">Stomach Issues</button>
+                        <button class="sc-ex" data-sym="chest pain, shortness of breath">Chest Pain</button>
+                        <button class="sc-ex" data-sym="rash, itching, skin irritation">Skin Problems</button>
+                    </div>
+                    <textarea id="scInput" class="sc-ta" placeholder="e.g. I have fever since 2 days, body ache and mild headache..."></textarea>
+                    <div class="sc-actions"><button class="sc-submit" id="scSubmit">Analyze Symptoms →</button><button class="sc-cancel" id="scCancel">Cancel</button></div>
+                </div>
+            </div>
+            <div class="vax-panel" id="vaxPanel">
+                <div class="vax-header">
+                    <h2>💉 Vaccine Tracker</h2>
+                    <div style="display:flex;gap:8px;align-items:center"><button class="vax-reg-btn" id="openChildReg">👶 Register</button><button class="vax-close" id="vaxClose">← Back to Chat</button></div>
+                </div>
+                <div class="vax-mem-bar"><span class="vax-mem-tag" id="vaxMemTag">👤 Select a member</span></div>
+                <div class="vax-stats" id="vaxStats"></div>
+                <div class="vax-grid" id="vaxGrid"></div>
+                <div class="vax-disc">⚕️ <strong>Disclaimer:</strong> This system does not replace medical professionals. These are general vaccine recommendations. Always consult your pediatrician or nearest healthcare center for an accurate, personalized schedule.</div>
+            </div>
+            <div class="chat-area" id="chatArea">
+                <div class="msgs" id="msgs">
+                    <div class="welcome" id="welcome">
+                        <div class="wicon">🤖</div>
+                        <h2 id="wtitle">Hello! I'm your AI Health Assistant</h2>
+                        <p>I can analyze symptoms, track vaccines, and answer health questions. How can I help you today?</p>
+                        <div class="qas">
+                            <button class="qa" data-q="I have fever, headache and body ache since 2 days"><span>🤒</span>Symptom Check</button>
+                            <button class="qa" data-q="My baby is 10 weeks old, what vaccines are due?"><span>💉</span>Vaccine Info</button>
+                            <button class="qa" data-q="What is diabetes and how to prevent it?"><span>📖</span>Health Info</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ibar"><div class="iwrap"><input type="text" id="ci" placeholder="Ask a health question or describe your symptoms..." autocomplete="off" /><button id="sb">➤</button></div></div>
+        </main>
+    </div>
+
+    <!-- FAMILY MEMBERS MODAL -->
+    <div class="modal-ov" id="memModal">
+        <div class="modal-card">
+            <h3>👨‍👩‍👧‍👦 Family Members <button class="modal-close" id="memModalClose">✕ Close</button></h3>
+            <div class="mem-list" id="memList"></div>
+            <div class="add-mem-form">
+                <h4>+ Add New Member</h4>
+                <div class="fgrp"><label>Full Name</label><input type="text" id="mName" class="fi" placeholder="e.g. Priya" /></div>
+                <div class="frow3">
+                    <div class="fgrp"><label>Age (yrs)</label><input type="number" id="mAge" class="fi" placeholder="Age" min="0" max="120" /></div>
+                    <div class="fgrp"><label>Gender</label><select id="mGender" class="fi"><option value="" disabled selected>Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+                    <div class="fgrp"><label>Relation</label><select id="mRel" class="fi"><option>Self</option><option>Child</option><option>Parent</option><option>Elder</option><option>Spouse</option></select></div>
+                </div>
+                <div class="fgrp"><label>Date of Birth (optional — enables exact due dates)</label><input type="date" id="mBirthDate" class="fi" /></div>
+                <button class="cbtn" id="addMemBtn" style="margin-top:8px">Add Member</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHILD REGISTRATION MODAL -->
+    <div class="modal-ov creg-modal" id="childRegModal">
+        <div class="modal-card">
+            <h3>👶 Register for Vaccine Tracking <button class="modal-close" id="childRegClose">✕ Close</button></h3>
+            <p style="font-size:.82rem;color:var(--ts);margin-bottom:18px;line-height:1.6">Enter your child's details to calculate exact vaccine due dates and receive email reminders.</p>
+            <div class="fgrp"><label>Full Name</label><input type="text" id="cregName" class="fi" placeholder="e.g. Arjun" /></div>
+            <div class="fgrp"><label>Date of Birth</label><input type="date" id="cregDOB" class="fi" /></div>
+            <div class="fgrp"><label>Your Email (for reminders)</label><input type="email" id="cregEmail" class="fi" placeholder="your.email@gmail.com" /></div>
+            <button class="cbtn" id="cregSubmit" style="margin-top:4px">💉 Generate Vaccine Schedule</button>
+            <div class="creg-success" id="cregSuccess"></div>
+            <div style="margin-top:14px;padding:10px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:var(--r2);font-size:.7rem;color:#fbbf24;line-height:1.5">⚠️ <strong>Disclaimer:</strong> This system does not replace medical professionals.</div>
+        </div>
+    </div>
+
+    <div class="remind-toast" id="remindToast">✉️ Reminder sent!</div>
+
+    <div id="vaccinePopup" class="vax-popup hidden">
+        <div class="vax-popup-card">
+            <button class="vax-popup-dismiss" id="vaxPopupDismiss">✕</button>
+            <div class="vax-popup-icon">💉</div>
+            <div class="vax-popup-title">⚠️ Vaccine Reminder</div>
+            <div class="vax-popup-child" id="vaxPopupChild">Loading…</div>
+            <div class="vax-popup-name" id="vaxPopupName"></div>
+            <div class="vax-popup-due" id="vaxPopupDue"></div>
+            <div class="vax-popup-counter" id="vaxPopupCounter"></div>
+            <div class="vax-popup-btns"><button class="vp-complete" id="vaxCompleteBtn">✅ Mark Completed</button><button class="vp-later" id="vaxLaterBtn">🔔 Remind Later</button></div>
+        </div>
+    </div>
+
+    <script>
+    (function(){
+        'use strict';
+
+        /* ─── CONFIG ─── AUTO-DETECTS localhost vs Railway/cloud ─── */
+        const BACKEND_API = window.location.origin + '/api';
+
+        /* ── AI backend URL — reads from /config (set AI_BACKEND_URL env var on Railway) ── */
+        let AI_API = 'http://localhost:8000/predict'; // local default
+        let _aiApiReady = (async () => {
+            try {
+                const cfgRes = await fetch(window.location.origin + '/config');
+                if (cfgRes.ok) {
+                    const cfg = await cfgRes.json();
+                    if (cfg.aiBackendUrl && !cfg.aiBackendUrl.includes('localhost')) {
+                        AI_API = cfg.aiBackendUrl.replace(/\/$/, '') + '/predict';
+                    }
+                }
+            } catch(e) { /* keep default localhost:8000 */ }
+        })();
+
+        const LS={USER:'aha_user',LANG:'aha_lang',ACTIVE_MEMBER:'aha_active_member'};
+        const VAXDB=[
+            {icon:'🛡️',name:'BCG',prevents:'Tuberculosis (TB)',ageRange:'At birth',minW:0,maxW:4,note:'Critical first vaccine. Protects against severe TB in infants.'},
+            {icon:'💧',name:'OPV',prevents:'Poliomyelitis (Polio)',ageRange:'Birth to 104 weeks',minW:0,maxW:104,note:'Oral drops preventing polio paralysis. Multiple doses required.'},
+            {icon:'🔰',name:'DPT',prevents:'Diphtheria, Pertussis, Tetanus',ageRange:'6-14 weeks + booster',minW:6,maxW:260,note:'Three-in-one vaccine against killer diseases.'},
+            {icon:'🩸',name:'Hepatitis B',prevents:'Hepatitis B liver disease',ageRange:'Birth to 52 weeks',minW:0,maxW:52,note:'Prevents chronic liver disease and liver cancer.'},
+            {icon:'🌀',name:'Rotavirus',prevents:'Severe diarrhea',ageRange:'6-10 weeks',minW:6,maxW:16,note:'Reduces infant hospitalization from diarrhea significantly.'},
+            {icon:'🫁',name:'PCV (Pneumococcal)',prevents:'Pneumonia, Meningitis',ageRange:'6-14 weeks',minW:6,maxW:52,note:'Protects against leading cause of child pneumonia.'},
+            {icon:'💉',name:'IPV',prevents:'Polio (injectable)',ageRange:'14 weeks',minW:14,maxW:52,note:'Injectable form for stronger immunity against polio.'},
+            {icon:'🔶',name:'Vitamin A',prevents:'Vitamin A deficiency, Blindness',ageRange:'9 months onwards',minW:36,maxW:260,note:'Prevents blindness and boosts immune response.'},
+            {icon:'🧫',name:'Typhoid',prevents:'Typhoid fever',ageRange:'9-24 months',minW:36,maxW:520,note:'Important in areas with poor sanitation.'},
+            {icon:'⭐',name:'Measles / MMR',prevents:'Measles, Mumps, Rubella',ageRange:'9-12 months',minW:36,maxW:78,note:'Prevents highly contagious measles and complications.'},
+            {icon:'🏥',name:'Varicella',prevents:'Chickenpox',ageRange:'12-18 months',minW:48,maxW:312,note:'Prevents severe chickenpox and shingles in future.'},
+            {icon:'🧬',name:'Hepatitis A',prevents:'Hepatitis A liver disease',ageRange:'12 months onwards',minW:48,maxW:2080,note:'Prevents hepatitis A infection and complications.'},
+            {icon:'👩‍⚕️',name:'HPV',prevents:'Human Papillomavirus / Cervical Cancer',ageRange:'9-14 years',minW:468,maxW:728,note:'Prevents HPV-related cancers and infections.'},
+            {icon:'🛡️',name:'Tetanus (Adult)',prevents:'Tetanus',ageRange:'Every 10 years for adults',minW:780,maxW:9999,note:'Essential booster for adults every decade.'},
+            {icon:'🦠',name:'COVID-19',prevents:'COVID-19 coronavirus',ageRange:'12+ years',minW:624,maxW:9999,note:'Protects against COVID-19 variants.'},
+            {icon:'🤧',name:'Influenza',prevents:'Influenza / Seasonal Flu',ageRange:'6 months+ (annual)',minW:26,maxW:9999,note:'Annual flu vaccine recommended for all ages.'},
+            {icon:'🧠',name:'Meningococcal',prevents:'Bacterial Meningitis',ageRange:'11-12 years',minW:572,maxW:9999,note:'Protects against bacterial meningitis.'},
+            {icon:'🔴',name:'Shingles (Zoster)',prevents:'Shingles / Herpes Zoster',ageRange:'50+ years',minW:2600,maxW:9999,note:'Prevents shingles and post-herpetic neuralgia.'},
+        ];
+        const VCHAT_KEYWORDS=['baby','child','infant','toddler','newborn','weeks old','months old','years old','vaccine','vaccination','immuniz'];
+        const $=id=>document.getElementById(id);
+        const loginScreen=$('loginScreen'),langScreen=$('langScreen'),appScreen=$('appScreen');
+        const msgs=$('msgs'),chatArea=$('chatArea'),ci=$('ci'),sb=$('sb');
+        const sidebar=$('sidebar'),sbov=$('sbov'),hmbg=$('hmbg');
+        const scPanel=$('scPanel'),vaxPanel=$('vaxPanel');
+        const histList=$('histList');
+        const memModal=$('memModal'),memModalClose=$('memModalClose'),memList=$('memList'),addMemBtn=$('addMemBtn');
+        const actMemBanner=$('actMemBanner'),actMemName=$('actMemName'),actMemAv=$('actMemAv');
+        const vaxMemTag=$('vaxMemTag'),vaxStats=$('vaxStats'),vaxGrid=$('vaxGrid');
+
+        let waiting=false,currentConvId=null,currentConvMsgs=[],currentUser=null;
+        let currentMemberId=null,allMembers=[],memberVaccineRecords={};
+
+        function ts(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+        function tsFull(){return new Date().toISOString()}
+        function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+        function scroll(){requestAnimationFrame(()=>{chatArea.scrollTop=chatArea.scrollHeight})}
+        function setWait(v){waiting=v;sb.disabled=v;ci.disabled=v}
+        function getUser(){try{const d=localStorage.getItem(LS.USER);return d?JSON.parse(d):null}catch{return null}}
+        function getLang(){return localStorage.getItem(LS.LANG)||'English'}
+        function getActiveMemberId(){return localStorage.getItem(LS.ACTIVE_MEMBER)}
+        function setActiveMemberId(id){localStorage.setItem(LS.ACTIVE_MEMBER,id)}
+
+        async function apiCall(endpoint,method='GET',body=null){
+            try{
+                const opts={method,headers:{'Content-Type':'application/json'}};
+                if(body)opts.body=JSON.stringify(body);
+                const res=await fetch(BACKEND_API+endpoint,opts);
+                if(!res.ok)throw new Error(`API Error: ${res.status}`);
+                return await res.json();
+            }catch(err){console.error('API Call Error:',err);throw err;}
+        }
+
+        const VAX_RELATIONS={'self':['i','me','myself','i am','im '],'child':['my child','my kid','my baby','my son','my daughter','my infant','my toddler','my newborn'],'parent':['my parent','my mother','my father','my mom','my dad','my parents'],'spouse':['my spouse','my husband','my wife','my partner'],'elder':['my grandmother','my grandfather','my grandma','my grandpa','my elder']};
+        const VAX_TRIGGER_KEYWORDS=['vaccine','vaccination','immuniz','baby','child','infant','toddler','newborn','mother','father','weeks old','months old','years old','booster','dpt','covid','polio','measles','hepatitis'];
+
+        function extractAgeFromMessage(msg){
+            const monthMatch=msg.match(/(\d+)\s*(?:months?|mos?)/i);if(monthMatch)return parseInt(monthMatch[1])/12;
+            const weekMatch=msg.match(/(\d+)\s*weeks?/i);if(weekMatch)return parseInt(weekMatch[1])/52;
+            const yearMatch=msg.match(/(\d+)\s*(?:years?|yrs?)/i);if(yearMatch){const n=parseInt(yearMatch[1]);if(n>=0&&n<=120)return n;}
+            const numbers=msg.match(/\b(\d+)\b/g)||[];for(let n of numbers){const num=parseInt(n);if(num>=0&&num<=120)return num;}
+            return null;
+        }
+        function extractRelationshipFromMessage(msg){const lm=msg.toLowerCase();for(const[rel,kws]of Object.entries(VAX_RELATIONS)){for(const kw of kws){if(lm.includes(kw))return rel;}}return null;}
+        function shouldTriggerVaccineTracking(msg){return VAX_TRIGGER_KEYWORDS.some(kw=>msg.toLowerCase().includes(kw));}
+        function getApplicableVaccines(ageYears){if(ageYears===null)return[];const aw=ageYears*52;return VAXDB.filter(v=>aw>=v.minW&&aw<=v.maxW+26);}
+
+        async function saveVaccineRecord(rel,age,vaccName){
+            if(!currentUser||!currentMemberId)return;
+            try{
+                const vaxInfo=VAXDB.find(v=>v.name===vaccName);
+                const existingRec=(memberVaccineRecords[currentMemberId]||[]).find(r=>r.vaccine_name===vaccName);
+                if(existingRec){if(existingRec.status!=='Completed'){await apiCall(`/vaccinations/${existingRec._id}`,'PUT',{status:'Due'});existingRec.status='Due';}}
+                else{const nr=await apiCall('/vaccinations','POST',{member_id:currentMemberId,vaccine_name:vaccName,disease_prevented:vaxInfo?.prevents||'',recommended_age:vaxInfo?.ageRange||'',status:'Due'});if(nr&&nr._id){if(!memberVaccineRecords[currentMemberId])memberVaccineRecords[currentMemberId]=[];memberVaccineRecords[currentMemberId].push(nr);}}
+            }catch(err){console.error('Failed to save vaccine record:',err);}
+        }
+
+        async function processVaccineKeywordTrigger(userMessage){
+            try{
+                if(!shouldTriggerVaccineTracking(userMessage))return;
+                const rel=extractRelationshipFromMessage(userMessage),age=extractAgeFromMessage(userMessage);
+                if(age===null)return;
+                const applicableVaccines=getApplicableVaccines(age);if(applicableVaccines.length===0)return;
+                const relLabel=rel?(rel==='self'?'you':`your ${rel}`):'your family member';
+                const aw=age*52;
+                const statusDue=applicableVaccines.filter(v=>aw>=v.minW&&aw<=v.maxW);
+                const statusOverdue=applicableVaccines.filter(v=>aw>v.maxW+0);
+                const statusUpcoming=applicableVaccines.filter(v=>aw<v.minW);
+                if(currentMemberId){for(const vax of statusDue.slice(0,4)){await saveVaccineRecord(rel||'family',age,vax.name);}}
+                let primaryVaccines=[],reminder='';
+                const ageDisplay=age<1?`${Math.round(age*12)} months`:(age<2?`${Math.round(age*12)} months`:`${Math.round(age)} years`);
+                if(statusDue.length>0){primaryVaccines=statusDue.slice(0,4);const vl=primaryVaccines.map(v=>`• ${v.name} — prevents ${v.prevents}`).join('\n');reminder=`💉 Vaccination Reminder for ${relLabel} (${ageDisplay} old):\n\n${vl}`;if(statusDue.length>4)reminder+=`\n• …and ${statusDue.length-4} more`;}
+                else if(statusOverdue.length>0){primaryVaccines=statusOverdue.slice(0,3);const vl=primaryVaccines.map(v=>`• ${v.name} — prevents ${v.prevents}`).join('\n');reminder=`⚠️ Overdue Vaccines for ${relLabel} (${ageDisplay} old):\n\n${vl}`;}
+                else if(statusUpcoming.length>0){primaryVaccines=statusUpcoming.slice(0,3);const vl=primaryVaccines.map(v=>`• ${v.name} (${v.ageRange})`).join('\n');reminder=`📅 Upcoming Vaccines for ${relLabel} (${ageDisplay} old):\n\n${vl}`;}
+                if(reminder)appendVaccineReminder(reminder,primaryVaccines,statusDue.length>0?'due':(statusOverdue.length>0?'overdue':'upcoming'));
+            }catch(err){console.error('Error in vaccine keyword trigger:',err);}
+        }
+
+        let lastVaccineQuery=null;
+
+        function appendVaccineReminder(message,vaccines,reminderType){
+            const r=document.createElement('div');r.className='mrow a';
+            const chipClass=reminderType==='overdue'?'vchip-overdue':(reminderType==='due'?'vchip-due':'vchip');
+            const chips=vaccines.slice(0,4).map(v=>`<span class="vchip ${chipClass}">${esc(v.name)}</span>`).join('');
+            const uid='vrem_'+Date.now();
+            r.innerHTML=`<div class="aav">🤖</div><div class="mbub"><div class="badge bllm"><span class="bd"></span>💉 Vaccine Reminder</div><div style="white-space:pre-wrap;line-height:1.75;margin:8px 0;color:var(--t)">${esc(message)}</div><div class="vchat-panel" style="margin-top:8px"><div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">${chips}</div><div style="font-size:.82rem;font-weight:600;color:#e2e8f0;margin-bottom:8px">❓ Has this vaccine already been administered?</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="vrem-btn vrem-yes" data-uid="${uid}" onclick="window.handleVaxConfirm('${uid}',true)">✅ Yes, it's done</button><button class="vrem-btn vrem-no" data-uid="${uid}" onclick="window.handleVaxConfirm('${uid}',false)">⏳ Not yet</button></div><div class="vcdisc" style="margin-top:10px">⚕️ <em>Medical Disclaimer: For exact vaccination schedules, consult a certified healthcare professional.</em></div></div><div class="mtime">${ts()}</div></div>`;
+            msgs.appendChild(r);lastVaccineQuery={uid,vaccines,reminderType,timestamp:Date.now()};scroll();
+        }
+
+        async function handleVaxConfirm(uid,isYes){
+            if(!lastVaccineQuery)return;
+            document.querySelectorAll(`[data-uid="${uid}"]`).forEach(b=>{b.disabled=true;b.style.opacity='.5';});
+            const status=isYes?'Completed':'Due',statusLabel=isYes?'✅ Marked as Completed':'⏳ Kept as Due',statusColor=isYes?'#5eead4':'#fcd34d';
+            try{
+                for(const vac of lastVaccineQuery.vaccines){const recs=memberVaccineRecords[currentMemberId]||[];const rec=recs.find(r=>r.vaccine_name===vac.name);if(rec){await apiCall(`/vaccinations/${rec._id}`,'PUT',{status});rec.status=status;}}
+                const r=document.createElement('div');r.className='mrow a';
+                r.innerHTML=`<div class="aav">🤖</div><div class="mbub"><div style="color:${statusColor};font-weight:700;font-size:.92rem">${statusLabel}</div><div style="color:var(--ts);font-size:.8rem;margin-top:4px">${lastVaccineQuery.vaccines.map(v=>esc(v.name)).join(', ')} — vaccine record updated in your health profile.</div><div class="mtime">${ts()}</div></div>`;
+                msgs.appendChild(r);scroll();if(vaxPanel.classList.contains('open'))renderVaxCards(null);
+            }catch(err){const r=document.createElement('div');r.className='mrow a';r.innerHTML=`<div class="aav">🤖</div><div class="mbub"><div style="color:#fca5a5">⚠️ Could not update record. Please try again.</div><div class="mtime">${ts()}</div></div>`;msgs.appendChild(r);scroll();}
+            lastVaccineQuery=null;
+        }
+        window.handleVaxConfirm=handleVaxConfirm;
+
+        function processVaccineConfirmation(userResponse){
+            if(!lastVaccineQuery||!currentMemberId)return false;
+            const lr=userResponse.toLowerCase();
+            const isConfirmation=['yes','yep','yeah','given','done','completed','administered','received','vaccinated'].some(w=>lr.includes(w));
+            const isDenial=['no','nope','not yet','not given','pending','waiting','havent',"haven't"].some(w=>lr.includes(w));
+            if(!isConfirmation&&!isDenial)return false;
+            handleVaxConfirm(lastVaccineQuery.uid,isConfirmation);return true;
+        }
+
+        function newConvId(){return'conv_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)}
+        function startConv(){currentConvId=newConvId();currentConvMsgs=[];return currentConvId}
+
+        async function saveMessage(role,text,mode){
+            if(!currentConvId)startConv();if(!currentUser)return;
+            currentConvMsgs.push({role,text,mode:mode||null,time:tsFull()});
+            try{await apiCall('/chat-history','POST',{user_id:currentUser._id,conv_id:currentConvId,user_message:role==='user'?text:null,ai_response:role==='ai'?text:null,response_mode:mode});}catch(err){console.error('Failed to save message:',err);}
+            renderHistList();
+        }
+
+        async function renderHistList(){
+            if(!currentUser)return;
+            try{
+                const records=await apiCall(`/chat-history/${currentUser._id}`);
+                histList.innerHTML='';if(!records.length){histList.innerHTML='<div class="hist-empty">No history yet</div>';return}
+                const grouped={};records.forEach(r=>{if(!grouped[r.conv_id])grouped[r.conv_id]=[];grouped[r.conv_id].push(r);});
+                Object.entries(grouped).slice(0,15).forEach(([convId,ms])=>{
+                    const d=document.createElement('div');d.className='hist-item';
+                    const firstMsg=ms.find(m=>m.user_message);const title=firstMsg?.user_message?.slice(0,48)||'Chat';
+                    const time=new Date(ms[0].timestamp);const rel=time.toLocaleDateString([],{month:'short',day:'numeric'})+' '+time.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+                    d.innerHTML=`<div>${esc(title)}</div><div class="hi-time">${rel} · ${ms.length} msg${ms.length>1?'s':''}</div>`;
+                    d.addEventListener('click',()=>loadConv(convId,ms));histList.appendChild(d);
+                });
+            }catch(err){console.error('Failed to load history:',err);}
+        }
+
+        function loadConv(convId,ms){clearChat(false);currentConvId=convId;currentConvMsgs=[];closeSB();ms.forEach(m=>{if(m.user_message)appendUserBubble(m.user_message);else if(m.ai_response)appendRawBubble(m.ai_response,m.response_mode);});}
+        function show(screen){[loginScreen,langScreen,appScreen].forEach(s=>s.classList.remove('active'));screen.classList.add('active')}
+
+        async function init(){
+            spawnParticles();
+            const user=getUser(),lang=getLang();
+            if(user&&localStorage.getItem(LS.LANG)){currentUser=user;await loadFamilyMembers();await loadChatHistory();fillProfile(user,lang);show(appScreen);startConv();personalizeWelcome(user);ci.focus();setTimeout(()=>checkVaccines(user._id),1800);}
+            else if(user){show(langScreen)}else{show(loginScreen)}
+        }
+
+        async function loadFamilyMembers(){
+            if(!currentUser)return;
+            try{
+                allMembers=await apiCall(`/family/${currentUser._id}`);
+                if(allMembers.length===0){const sm=await apiCall('/family','POST',{user_id:currentUser._id,name:currentUser.name,age:currentUser.age||0,relationship:'Self'});allMembers=[sm];}
+                const aid=getActiveMemberId();currentMemberId=aid&&allMembers.find(m=>m._id===aid)?aid:allMembers[0]._id;
+                setActiveMemberId(currentMemberId);updateActiveMemDisplay();showMemberVaccineReminders();
+            }catch(err){console.error('Failed to load family members:',err);}
+        }
+
+        async function loadChatHistory(){if(!currentUser)return;try{await renderHistList();}catch(err){console.error('Failed to load chat history:',err);}}
+
+        function updateActiveMemDisplay(){
+            const mem=allMembers.find(m=>m._id===currentMemberId);
+            if(mem){actMemName.textContent=mem.name;actMemAv.textContent=mem.name.charAt(0).toUpperCase();vaxMemTag.textContent=`👤 ${esc(mem.name)} (${mem.age} yrs)`;loadVaccineRecords();}
+        }
+
+        async function loadVaccineRecords(){if(!currentMemberId)return;try{const records=await apiCall(`/vaccinations/${currentMemberId}`);memberVaccineRecords[currentMemberId]=records||[];}catch(err){console.error('Failed to load vaccine records:',err);}}
+
+        function renderFamilyMembers(){
+            memList.innerHTML='';
+            allMembers.forEach(mem=>{
+                const item=document.createElement('div');item.className='mem-item'+(mem._id===currentMemberId?' active':'');
+                item.innerHTML=`<div class="mem-av">${mem.name.charAt(0).toUpperCase()}</div><div class="mem-info"><div class="mem-name">${esc(mem.name)}</div><div class="mem-meta">${mem.age||0} yrs · ${esc(mem.relationship||'Family')}</div></div>${mem.relationship!=='Self'?`<button class="mem-del" data-id="${mem._id}">✕</button>`:''}`;
+                item.addEventListener('click',()=>switchMember(mem._id));
+                const delBtn=item.querySelector('.mem-del');if(delBtn)delBtn.addEventListener('click',(e)=>{e.stopPropagation();deleteMember(mem._id);});
+                memList.appendChild(item);
+            });
+        }
+
+        async function switchMember(memberId){currentMemberId=memberId;setActiveMemberId(memberId);updateActiveMemDisplay();await loadVaccineRecords();renderFamilyMembers();renderVaxCards(null);}
+
+        async function deleteMember(memberId){
+            if(!confirm('Delete this family member?'))return;
+            try{await apiCall(`/family/${memberId}`,'DELETE');allMembers=allMembers.filter(m=>m._id!==memberId);if(currentMemberId===memberId){currentMemberId=allMembers[0]._id;setActiveMemberId(currentMemberId);}renderFamilyMembers();updateActiveMemDisplay();}
+            catch(err){console.error('Failed to delete member:',err);}
+        }
+
+        actMemBanner.addEventListener('click',()=>{renderFamilyMembers();memModal.classList.add('open');});
+        memModalClose.addEventListener('click',()=>memModal.classList.remove('open'));
+        memModal.addEventListener('click',(e)=>{if(e.target===memModal)memModal.classList.remove('open');});
+
+        addMemBtn.addEventListener('click',async()=>{
+            const name=$('mName').value.trim(),age=$('mAge').value,gender=$('mGender').value,rel=$('mRel').value,birthDate=$('mBirthDate').value;
+            if(!name||!age){alert('Name and age required');return;}
+            try{const nm=await apiCall('/family','POST',{user_id:currentUser._id,name,age:Number(age),relationship:rel,gender,birth_date:birthDate||null});allMembers.push(nm);$('mName').value='';$('mAge').value='';$('mGender').value='';$('mBirthDate').value='';renderFamilyMembers();alert('Family member added! Vaccine schedule generated.');}
+            catch(err){console.error('Failed to add member:',err);}
+        });
+
+        function spawnParticles(){const c=$('ptcl');if(!c)return;for(let i=0;i<16;i++){const p=document.createElement('div');p.className='pt';const sz=Math.random()*100+40;p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;animation-duration:${Math.random()*10+12}s;animation-delay:${Math.random()*8}s`;c.appendChild(p);}}
+
+        $('lform').addEventListener('submit',e=>{
+            e.preventDefault();
+            const name=$('un').value.trim(),email=$('ue').value.trim(),age=$('ua').value,gender=$('ug').value,loc=$('ul').value.trim();
+            if(!name||!email||!age||!gender||!loc)return;
+            (async()=>{try{const result=await apiCall('/users','POST',{name,email,age:Number(age),gender,location:loc});localStorage.setItem(LS.USER,JSON.stringify(result.user));currentUser=result.user;show(langScreen);}catch(err){alert('Login failed: '+err.message);}})();
+        });
+
+        document.querySelectorAll('.lbtn').forEach(b=>b.addEventListener('click',async()=>{
+            localStorage.setItem(LS.LANG,b.dataset.lang);const u=getUser();if(!u)return;
+            currentUser=u;await loadFamilyMembers();await loadChatHistory();fillProfile(u,b.dataset.lang);show(appScreen);startConv();personalizeWelcome(u);ci.focus();setTimeout(()=>checkVaccines(u._id),1800);
+        }));
+
+        function fillProfile(u,lang){$('spname').textContent=u.name||'User';$('spdet').textContent=`${u.age||'—'} yrs · ${u.gender||'—'} · ${u.location||'—'}`;$('splang').textContent='🌐 '+lang;}
+        function personalizeWelcome(u){const el=$('wtitle');if(el&&u&&u.name)el.textContent=`Hello, ${u.name}! 👋`}
+
+        function openSB(){sidebar.classList.add('open');sbov.classList.add('vis')}
+        function closeSB(){sidebar.classList.remove('open');sbov.classList.remove('vis')}
+        hmbg.addEventListener('click',openSB);sbov.addEventListener('click',closeSB);
+        $('logoutBtn').addEventListener('click',()=>{localStorage.removeItem(LS.USER);localStorage.removeItem(LS.LANG);location.reload()});
+        $('ncbtn').addEventListener('click',()=>{clearChat(true);closeSB()});
+
+        function setNavActive(id){document.querySelectorAll('.nitem').forEach(n=>n.classList.remove('active'));$(id).classList.add('active')}
+        $('navChat').addEventListener('click',()=>{setNavActive('navChat');scPanel.classList.remove('open');vaxPanel.classList.remove('open');closeSB()});
+        $('navSC').addEventListener('click',()=>{setNavActive('navSC');scPanel.classList.add('open');vaxPanel.classList.remove('open');closeSB()});
+        $('navVax').addEventListener('click',()=>{setNavActive('navVax');vaxPanel.classList.add('open');scPanel.classList.remove('open');renderVaxCards(null);closeSB()});
+
+        function clearChat(preserveHist){
+            msgs.innerHTML='';const w=document.createElement('div');w.className='welcome';w.id='welcome';
+            w.innerHTML=`<div class="wicon">🤖</div><h2 id="wtitle">Hello! 👋</h2><p>Start a new conversation. Ask about symptoms, vaccines, or health topics.</p><div class="qas"><button class="qa" data-q="I have fever, headache and body ache since 2 days"><span>🤒</span>Symptom Check</button><button class="qa" data-q="My baby is 10 weeks old, what vaccines are due?"><span>💉</span>Vaccine Info</button><button class="qa" data-q="What is diabetes?"><span>📖</span>Health Info</button></div>`;
+            msgs.appendChild(w);bindQuickActions();startConv();if(!preserveHist)renderHistList();
+        }
+        function hideWelcome(){const w=msgs.querySelector('.welcome');if(w)w.style.display='none'}
+
+        function bindQuickActions(){document.querySelectorAll('.qa').forEach(b=>b.addEventListener('click',()=>{const q=b.dataset.q;if(q){ci.value=q;handleSend();}}));}
+        bindQuickActions();
+
+        $('scCancel').addEventListener('click',()=>{scPanel.classList.remove('open');setNavActive('navChat')});
+        $('scSubmit').addEventListener('click',()=>{const sym=$('scInput').value.trim();if(!sym)return;scPanel.classList.remove('open');setNavActive('navChat');ci.value='My symptoms: '+sym;handleSend();$('scInput').value='';});
+        document.querySelectorAll('.sc-ex').forEach(b=>b.addEventListener('click',()=>{$('scInput').value=b.dataset.sym;}));
+
+        $('vaxClose').addEventListener('click',()=>{vaxPanel.classList.remove('open');setNavActive('navChat')});
+
+        $('openChildReg').addEventListener('click',()=>{$('childRegModal').classList.add('open');$('cregEmail').value=currentUser?.email||'';});
+        $('childRegClose').addEventListener('click',()=>$('childRegModal').classList.remove('open'));
+        $('childRegModal').addEventListener('click',e=>{if(e.target===$('childRegModal'))$('childRegModal').classList.remove('open');});
+
+        $('cregSubmit').addEventListener('click',async()=>{
+            const childName=$('cregName').value.trim(),dob=$('cregDOB').value,email=$('cregEmail').value.trim();
+            if(!childName){alert('Please enter child name');return;}if(!dob){alert('Please enter date of birth');return;}
+            const btn=$('cregSubmit');btn.textContent='Generating…';btn.disabled=true;
+            try{
+                const result=await apiCall('/register-child','POST',{user_id:currentUser._id,child_name:childName,birth_date:dob,email:email||currentUser.email});
+                allMembers=await apiCall(`/family/${currentUser._id}`);
+                const upcoming=result.upcoming_vaccines||[];
+                const upRows=upcoming.slice(0,4).map(v=>{const d=v.due_date?new Date(v.due_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):v.recommended_age;return`<li style="margin:3px 0"><strong>${esc(v.vaccine_name)}</strong> — due ${d}</li>`;}).join('');
+                const successDiv=$('cregSuccess');
+                successDiv.innerHTML=`✅ <strong>${esc(childName)}'s vaccine schedule registered!</strong><br>${result.vaccines_seeded} vaccines seeded with exact due dates.<br>${upcoming.length?`<br><strong>Next upcoming:</strong><ul style="margin:6px 0 0 14px">${upRows}</ul>`:''}${email?`<br>📧 Email reminders will be sent to <strong>${esc(email)}</strong>`:''}`;
+                successDiv.classList.add('show');updateActiveMemDisplay();setTimeout(()=>renderVaxCards(null),500);
+            }catch(err){alert('Registration failed: '+err.message);}
+            finally{btn.textContent='💉 Generate Vaccine Schedule';btn.disabled=false;}
+        });
+
+        async function requestReminder(vaccineId,btnEl){
+            if(!currentUser)return;const orig=btnEl.innerHTML;btnEl.textContent='Sending…';btnEl.disabled=true;
+            try{
+                const result=await apiCall('/vaccines/remind','POST',{vaccine_id:vaccineId,user_id:currentUser._id});
+                btnEl.innerHTML='✓ Sent';btnEl.classList.add('sent');
+                const toast=$('remindToast');toast.textContent=result.skipped?'⚠️ Email not configured — set EMAIL_USER in .env':(result.sent?'✉️ Reminder email sent successfully!':'⚠️ '+(result.message||'Could not send'));
+                toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),3500);
+            }catch(err){btnEl.innerHTML=orig;btnEl.disabled=false;}
+        }
+        window.requestReminder=requestReminder;
+
+        function getVaccineStatus(vaccine,memberAge){const aw=memberAge*52;if(aw<vaccine.minW)return'Upcoming';if(aw>vaccine.maxW+26)return'Overdue';if(aw<=vaccine.maxW)return'Due';return'Upcoming';}
+        function getVaccinationStat(vaccName){const recs=memberVaccineRecords[currentMemberId]||[];return recs.find(r=>r.vaccine_name===vaccName);}
+
+        async function markVaccineGiven(vaccName){
+            const rec=getVaccinationStat(vaccName);if(!rec)return;
+            try{await apiCall(`/vaccinations/${rec._id}`,'PUT',{status:'Completed'});await loadVaccineRecords();renderVaxCards(null);}catch(err){console.error('Failed to mark vaccine:',err);}
+        }
+
+        function renderVaxCards(filterWeeks){
+            const grid=$('vaxGrid');grid.innerHTML='';
+            const mem=allMembers.find(m=>m._id===currentMemberId);if(!mem)return;
+            const memberAge=(mem.age||0),aw=memberAge*52;
+            const list=filterWeeks===null?VAXDB:VAXDB.filter(v=>filterWeeks>=v.minW&&filterWeeks<=v.maxW+26);
+            const show=list.length?list:VAXDB;
+            const stats={Completed:0,Due:0,Overdue:0,Upcoming:0};
+            show.forEach(v=>{
+                const rec=getVaccinationStat(v.name);let status=rec?.status||getVaccineStatus(v,memberAge);
+                if(status==='Completed')stats.Completed++;else if(status==='Due')stats.Due++;else if(status==='Overdue')stats.Overdue++;else stats.Upcoming++;
+                const badgeClass='vs-'+status.toLowerCase();
+                const badgeEmoji={Completed:'🟢',Due:'🟡',Overdue:'🔴',Upcoming:'🔵'}[status]||'🔵';
+                let dueDateHtml='';
+                if(rec&&rec.due_date){const d=new Date(rec.due_date),now=new Date();const daysLeft=Math.ceil((d-now)/(24*3600*1000));const dStr=d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});const urgency=daysLeft<=1?'#fca5a5':daysLeft<=7?'#fcd34d':'#93c5fd';dueDateHtml=`<div class="vcard-duedate" style="color:${urgency};border-color:${urgency}20">📅 Due: ${dStr}${daysLeft>=0?` (${daysLeft}d)`:' (overdue)'}</div>`;}
+                let actionsHtml='';
+                if(status!=='Completed'){const rd=rec?.reminder_sent?'class="btn-remind sent" disabled':'class="btn-remind"';const rl=rec?.reminder_sent?'✓ Reminded':'⏰ Remind Me';const rp=rec?._id?`<button ${rd} onclick="if(!this.disabled)window.requestReminder('${rec._id}',this)">${rl}</button>`:'';actionsHtml=`<div class="vcard-actions"><button class="vcard-mark" onclick="window.markVaccineGiven('${v.name.replace(/'/g,"\\'")}')">✔ Completed</button>${rp}</div>`;}
+                const c=document.createElement('div');c.className='vcard';
+                c.innerHTML=`<div class="vcard-icon">${v.icon}</div><div class="vcard-name">${esc(v.name)}</div><div class="vcard-prevents">Prevents: ${esc(v.prevents)}</div><span class="vcard-age">${esc(v.ageRange)}</span>${dueDateHtml}<div class="vs-badge ${badgeClass}">${badgeEmoji} ${status}</div><div class="vcard-note">${esc(v.note)}</div>${actionsHtml}`;
+                grid.appendChild(c);
+            });
+            vaxStats.innerHTML=`<span style="color:#5eead4">🟢 ${stats.Completed} Completed</span><span style="color:#fcd34d">🟡 ${stats.Due} Due</span><span style="color:#fca5a5">🔴 ${stats.Overdue} Overdue</span><span style="color:#93c5fd">🔵 ${stats.Upcoming} Upcoming</span>`;
+        }
+        window.markVaccineGiven=markVaccineGiven;
+
+        function showMemberVaccineReminders(){
+            if(!currentMemberId||!allMembers)return;const mem=allMembers.find(m=>m._id===currentMemberId);if(!mem||!mem.age)return;
+            const memberAge=mem.age||0;
+            const dueVaccines=VAXDB.filter(v=>{const rec=(memberVaccineRecords[currentMemberId]||[]).find(r=>r.vaccine_name===v.name);if(rec)return rec.status==='Due'||rec.status==='Overdue';return getVaccineStatus(v,memberAge)==='Due'||getVaccineStatus(v,memberAge)==='Overdue';});
+            if(dueVaccines.length===0)return;
+            const ageDisplay=memberAge<2?`${Math.round(memberAge*12)} months`:`${memberAge} yrs`;
+            const names=dueVaccines.slice(0,3).map(v=>v.name).join(', ');const moreCount=dueVaccines.length>3?` +${dueVaccines.length-3} more`:'';
+            const rem=document.createElement('div');rem.className='reminder-bub';
+            rem.innerHTML=`<div class="rem-head">💉 Vaccine Reminder — ${esc(mem.name)} (${ageDisplay})</div><div>${dueVaccines.length} vaccine(s) are due or overdue: <strong>${esc(names)}${moreCount}</strong></div><div style="margin-top:6px;font-size:.72rem;color:var(--tm)">Open the 💉 Vaccine Tracker in the sidebar to review and mark them as given.</div>`;
+            msgs.appendChild(rem);scroll();
+        }
+
+        function badge(mode){const m={ml_prediction:['bml','ML Prediction'],llm_fallback:['bllm','AI Health Guidance'],clarification:['bclf','More Info Needed'],vaccine_tracking:['bllm','AI Health Guidance'],error:['berr','Error']};const b=m[mode]||m['llm_fallback'];return`<div class="badge ${b[0]}"><span class="bd"></span>${b[1]}</div>`;}
+        function vchatPanel(){const chips=VAXDB.slice(0,6).map(v=>`<span class="vchip">${esc(v.name)}</span>`).join('');return`<div class="vchat-panel"><div class="vchat-title">💉 Common Vaccine Recommendations</div><div class="vchips">${chips}</div><div class="vcdisc">For exact schedule, consult a pediatrician. <a href="#" id="openVaxFull" style="color:#5eead4;text-decoration:none">View full tracker →</a></div></div>`;}
+
+        function appendUserBubble(text){const r=document.createElement('div');r.className='mrow u';r.innerHTML=`<div class="mbub">${esc(text)}<div class="mtime">${ts()}</div></div>`;msgs.appendChild(r);scroll();}
+
+        function buildAIBody(resp,userText){
+            const mode=resp.mode||'error';let body='';
+            switch(mode){
+                case'ml_prediction':{const dis=resp.disease,conf=typeof resp.confidence==='number'?resp.confidence:null,pct=conf!==null?Math.round(conf*100):null,msg=resp.message||'';if(dis)body+=`<div class="mld">🧬 ${esc(dis)}</div>`;if(pct!==null)body+=`<div class="mlcw"><div class="mlcl"><span>Confidence</span><span class="mlcv">${pct}%</span></div><div class="mltr"><div class="mlf" data-w="${pct}"></div></div></div>`;if(msg)body+=`<div class="mlm">${esc(msg)}</div>`;body+=`<div class="mldisc">⚕️ AI-based prediction. Please consult a medical professional for accurate diagnosis.</div>`;break;}
+                case'error':body=`<div class="errbox"><span>⚠️</span><span>${esc(resp.message||'Something went wrong. Please try again.')}</span></div>`;break;
+                default:body=`<div style="line-height:1.7;white-space:pre-wrap">${esc(resp.message||JSON.stringify(resp))}</div>`;
+            }
+            if(userText&&VCHAT_KEYWORDS.some(k=>userText.toLowerCase().includes(k)))body+=vchatPanel();
+            return{mode,body};
+        }
+
+        function appendRawBubble(htmlBody,mode){
+            const r=document.createElement('div');r.className='mrow a';
+            r.innerHTML=`<div class="aav">🤖</div><div class="mbub">${badge(mode||'llm_fallback')}${htmlBody}<div class="mtime">${ts()}</div></div>`;
+            msgs.appendChild(r);scroll();
+            r.querySelectorAll('.mlf').forEach(f=>{requestAnimationFrame(()=>{setTimeout(()=>{f.style.width=f.dataset.w+'%'},80)})});
+            const vlink=r.querySelector('#openVaxFull');if(vlink)vlink.addEventListener('click',e=>{e.preventDefault();setNavActive('navVax');vaxPanel.classList.add('open');renderVaxCards(null)});
+        }
+
+        function appendAIBubble(resp,userText){const{mode,body}=buildAIBody(resp,userText);appendRawBubble(body,mode);saveMessage('ai',body,mode);}
+        function showTyping(){const r=document.createElement('div');r.className='trow';r.id='tind';r.innerHTML=`<div class="aav">🤖</div><div class="tbub"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;msgs.appendChild(r);scroll();}
+        function removeTyping(){const e=$('tind');if(e)e.remove()}
+
+        async function handleSend(){
+            const text=ci.value.trim();if(!text||waiting)return;
+            ci.value='';hideWelcome();if(!currentConvId)startConv();
+            appendUserBubble(text);saveMessage('user',text,null);
+            processVaccineConfirmation(text);
+            setWait(true);showTyping();
+            await processVaccineKeywordTrigger(text);
+            await _aiApiReady; // ensure AI_API URL is resolved before calling
+            const lang=getLang();const prompt=lang!=='English'?`${text}\n\n[Respond in ${lang} language]`:text;
+            try{
+                const res=await fetch(AI_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:prompt,message:prompt})});
+                removeTyping();
+                if(!res.ok){appendAIBubble({mode:'error',message:`Server error (${res.status}). Please try again.`},text);setWait(false);return}
+                let data;try{data=await res.json()}catch{appendAIBubble({mode:'error',message:'Failed to parse server response.'},text);setWait(false);return}
+                appendAIBubble(data,text);
+            }catch(err){removeTyping();const isLocal=AI_API.includes('localhost');const hint=isLocal?' Make sure the Python backend is running: cd backend && python -m uvicorn api.main:app --port 8000':'';appendAIBubble({mode:'error',message:'Cannot reach the AI server.'+hint},text)}
+            finally{setWait(false);ci.focus()}
+        }
+
+        sb.addEventListener('click',handleSend);
+        ci.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend()}});
+
+        /* ── VACCINE POPUP — uses same origin, works on any host ── */
+        let _popupQueue=[],_popupIndex=0;
+
+        async function checkVaccines(userId){
+            if(sessionStorage.getItem('vax_popup_dismissed_'+userId))return;
+            try{
+                const res=await fetch(window.location.origin+'/api/upcoming-vaccines/'+userId);
+                if(!res.ok)return;const data=await res.json();
+                _popupQueue=[];
+                if(Array.isArray(data)){data.forEach(group=>{const childName=group.child_name||'your child';(group.vaccines||[]).forEach(v=>{_popupQueue.push({child_name:childName,vaccine:v});});});}
+                if(_popupQueue.length>0){_popupIndex=0;showPopupItem(_popupIndex);}
+            }catch(err){console.log('Vaccine popup check error:',err);}
+        }
+
+        function showPopupItem(idx){
+            if(idx>=_popupQueue.length){document.getElementById('vaccinePopup').classList.add('hidden');return;}
+            const item=_popupQueue[idx],v=item.vaccine,daysLeft=typeof v.days_left==='number'?v.days_left:'?';
+            document.getElementById('vaxPopupChild').textContent=`For: ${item.child_name}`;
+            document.getElementById('vaxPopupName').textContent=v.vaccine_name||'Vaccine';
+            const dueEl=document.getElementById('vaxPopupDue');dueEl.className='vax-popup-due';
+            if(daysLeft<=1){dueEl.classList.add('urgent');dueEl.textContent=daysLeft<=0?'🚨 Due Today!':'⚠️ Due Tomorrow!';}
+            else if(daysLeft<=2){dueEl.classList.add('urgent');dueEl.textContent=`⚠️ Due in ${daysLeft} days`;}
+            else{dueEl.classList.add('soon');dueEl.textContent=`📅 Due in ${daysLeft} days`;}
+            document.getElementById('vaxPopupCounter').textContent=_popupQueue.length>1?`Vaccine ${idx+1} of ${_popupQueue.length}`:'';
+            document.getElementById('vaccinePopup').classList.remove('hidden');
+        }
+
+        document.getElementById('vaxCompleteBtn').addEventListener('click',async()=>{
+            if(_popupQueue.length===0)return;const item=_popupQueue[_popupIndex],v=item.vaccine;
+            try{await fetch(window.location.origin+'/api/vaccination/'+v.id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'completed'})});if(typeof renderVaxCards==='function')renderVaxCards(null);}
+            catch(err){console.error('Mark completed error:',err);}
+            _popupIndex++;if(_popupIndex>=_popupQueue.length){document.getElementById('vaccinePopup').classList.add('hidden');}else{showPopupItem(_popupIndex);}
+        });
+
+        document.getElementById('vaxLaterBtn').addEventListener('click',()=>{document.getElementById('vaccinePopup').classList.add('hidden');if(currentUser)sessionStorage.setItem('vax_popup_dismissed_'+currentUser._id,'1');});
+        document.getElementById('vaxPopupDismiss').addEventListener('click',()=>{document.getElementById('vaccinePopup').classList.add('hidden');if(currentUser)sessionStorage.setItem('vax_popup_dismissed_'+currentUser._id,'1');});
+        document.getElementById('vaccinePopup').addEventListener('click',(e)=>{if(e.target===document.getElementById('vaccinePopup')){document.getElementById('vaccinePopup').classList.add('hidden');if(currentUser)sessionStorage.setItem('vax_popup_dismissed_'+currentUser._id,'1');}});
+
+        init();
+    })();
+    </script>
+</body>
+</html>
