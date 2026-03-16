@@ -13,7 +13,9 @@ MODEL_DIR = BACKEND_DIR / "models"
 MODEL_PATH = MODEL_DIR / "classifier.pkl"
 ENCODER_PATH = MODEL_DIR / "label_encoder.pkl"
 
-EMBED_MODEL_NAME = "sentence-transformers/all-mpnet-base-v2"
+# all-MiniLM-L6-v2 is 6x smaller than all-mpnet-base-v2
+# Uses only ~90MB RAM vs ~500MB — works on free tier
+EMBED_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
 # =====================================================
 # LOAD MODELS ONCE (IMPORTANT FOR PERFORMANCE)
