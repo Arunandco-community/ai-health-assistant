@@ -11,7 +11,8 @@ RUN pip install --no-cache-dir torch==2.2.2+cpu --index-url https://download.pyt
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
+# Pre-download correct 768-dim model (matches training)
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-mpnet-base-v2')"
 
 COPY . .
 
